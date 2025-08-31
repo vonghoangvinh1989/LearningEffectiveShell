@@ -19,6 +19,14 @@
 	find . -type f | xargs -L 3 echo --> -L 3 here means echo will run twice, processing three files the first time and the remaining two files the second time
 	
 4) Organizing the Parameters for Commands
+	find . name "*.txt" -print0 | xargs -0 -t cp ~/backup --> this went wrong, the problem is the destination location for the files has to be the last parameters but xargs has made it the first parameters
 	
+	find . -name "*.txt" -print0 | xargs -0 -t -I {} cp {} ~/backups --> -I sets the replacement string to a pair of braces which tells xargs every time you see {}, replace it with your output, when using -I, it automatically implies -L 1
 	
+	find . -name "*.txt" -print0 | xargs -0 -t -I {} cp {} {}.backup --> create a new destination file with the same name but ending with .backup, this only make sense with -L 1
+	
+5) Running Commands Interactively
+	ls | xargs -t -I {} -p cp {} ~/pics/{} --> -p (prompt) option tells xargs to ask you to confirm each command before running it	
+
+6) Running a Command for Each Input
 	
