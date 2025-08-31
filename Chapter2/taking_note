@@ -1,0 +1,83 @@
+1) The Descriptors 0, 1 and 2 are reserved for stdin, stdout and stderr, to check run the command:
+	ls -la /dev/std*
+	
+2) Pipe the output of cat command into sort command and pipe that output into the uniq
+	cat ~/effective-shell/text/simpsons-characters.txt | sort | uniq
+
+3) Using output from shell code as input
+	echo "Hello everyone!" | sed 's/Hello/Goodbye'
+	Result: Goodbye everyone!
+	
+	Ex: to change all occurrence using the 'g': sed 's/Hello/Goodbye/g'
+
+4) Using Files as Input
+	cat ~/effective-shell/text/simpsons-characters.txt | wc -l
+	wc -l ~/effective-shell/text/simpsons-characters.txt
+	wc -l < ~/effective-shell/text/simpsons-characters.txt
+	
+	Cool trick: 
+		wc /dev/stdin
+		one two three
+		Ctrl^D
+	--> it will return everything: lines, words, bytes, and path
+
+5) Using Clipboard content
+	Open editor and type something, copy it to clipboard
+	Command: xclip -o | rev | xclip
+	xclip -o --> see the content in clipboard was copied and printed reversely
+	
+	Note: rev: reverse text
+		echo "hello world" | rev
+		
+6) Filtering Input
+	head -n 100 100GBFile.csv > 100linefile.csv
+	
+7) Standard Output Applications
+	Display Onscreen
+		Output to 'less' which allows to view per page, space to view more
+			ls /usr/bin /usr/local/bin /usr/sbin | less
+			Use keys: u, d and search with / to forward, ? to backward
+	Redirecting to a file
+		echo "Here's some data" > some_file.txt
+	Appending to a file
+		echo "Tuesday was good" >> diary.txt
+		echo "Wednesday was better!" >> diary.txt
+		echo "Thursday suuucks" >> diary.txt
+		cat diary.txt
+		
+8) Standard Error Applications
+	echo 'Be quite, this is a library!' | tr '[:lower:]' '[:upper:]' --> translate all lowercase characters to uppercase
+	
+	Redirect to Standard output
+		mkdir ./new-folder 2>&1 | tr '[:lower:]' '[:upper:]'
+		Note: we need &1 to define 1 is file director, not the name of the file, if we do not define &1, it will be thinking that 1 is the name file
+	
+	Redirect to a file
+		mkdir ~/effective-shell/new-folder 2>./errors.txt
+	
+	Redirect to null
+		mkdir ~/effective-shell/new-folder 2>/dev/null
+		
+	Append to a file
+		mkdir ~/effective-shell/new-folder 2>>./all-errors.log
+		
+9) Redirection with both stdout and stderr
+	If you want to redirect both error and stdout together
+		Wrong way: ls /usr/bin /nothing 2>&1 > all-output.txt
+		Correct way: ls /usr/bin > all-output.txt 2>&1
+	
+10) The T Pipe
+	cat ~/effective-shell/text/simpsons-characters.txt | sort | tee sorted.txt --> alphabetically sorts the simpsons-character.txt file and saved it to sorted.txt but also shows it onscreen using tee (read from stdin and write to stdout and files and also print out to std)
+
+	cat ~/effective-shell/text/simpsons-characters.txt | sort | tee sorted.txt | uniq | grep '^A'
+	
+11) Pipelines and the Unix Philosophy
+	cat data.dat | sort | uniq | grep -v '^#' | wc -l
+	
+	grep -v '^#': -v: invert that mean gell all lines do not contain hashtag # infront
+	
+	
+		
+
+
+

@@ -1,0 +1,50 @@
+1) Searching Through Text
+	echo $HISTFILE --> show location of history file
+	cat $HISTFILE --> show the list of commands you've executed in your shell
+	
+	grep man $HISTFILE --> search through this file for lines which containing the text "man"
+	Alternative for grep man $HISTFILE, we can use: history command
+		Ex: history | grep man
+	
+
+2) Using grep with Regular Expressions
+	a) Find only lines that start with man
+		history | grep "[0-9]\+  man" --> remember, before "man" have double space
+		
+		Note: prefer work with extended regexes
+			history | grep -E "[0-9]+  man"
+		or
+			history | egrep "[0-9]+  man"
+			
+3) Advanced Grep Features
+	a) Making a Search Case-Insensitive
+		grep -i err ./logs/web-server-logs.txt
+			note: -i: insensitive, find err in log file
+			
+	b) Getting Additional Context for Search Result
+		grep host -A 3 ./programs/web-server/web-server.js
+			-A: after parameter, prints a given number of lines after each line matching the search
+		grep throw -B 5 ./programs/web-server/web-server.js
+			-B: before parameter, print a specified number of lines that come before the match
+		history | grep -C 5 'git init'
+			-C: context parameter, provides a specified number of lines before and after each match
+	
+	c) Searching through Multiple Files
+		grep -H -n ./logs/apm-logs/*.logs
+			note: -H: show hearder (when search multiple files, if one file: header no show), -n: line number
+		grep -r -H -n -i error ./logs
+			note: -r: recursive, -i: insensitive
+			We can write: grep -rHni ./logs/apm-logs/*.logs
+	
+	d) Filtering and Piping grep Output
+		grep -v debug ./logs/web-server.logs
+			-v: inverse, use to exclude something, here wanting to exclude lines that have "debug"
+		
+		grep -i error -r ./logs | grep -i -v memory | grep -i -v 'not found'
+	
+	e) Combing grep with other commands
+		ps -a | grep vim --> filter the list to only vim processes
+		grep -H -C 3 -R password ./k8s/**/*.yaml | less
+		ls -l /usr/bin /bin /usr/local/bin | grep zip --> search through all of the installed programs for programs with zip
+		history | grep grep | tail -n 10 --> show the last 10 grep commands entered in the shell
+		

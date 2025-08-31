@@ -1,0 +1,56 @@
+1) Extracting Head and Tail
+	head ~/effective-shell/data/top100.csv
+	head -n 3 ~/effective-shell/data/top.csv
+	
+	tail $HISTFILE --> view the 10 most recent commands you've entered in your shell
+		note: why difference between "tail $HISTFILE" and "history | tail", "tail $HISTFILE" gives result on disk while "history | tail" gives result on the running shell (memory)
+	
+	tail -n 3 $HISTFILE --> -n flag gives the limit number of lines tail, meaning last 3 lines
+	
+	tail -f $HISTFILE --> -f flag or follow flag to follow the contents of the history file and see when a new line is added to the file
+	
+	head ~/effective-shell/data/top100.csv | tail -n +2 --> the plug sign "+" indicates that you want to return everything from the line number, here is from line 2 onward
+		note: would like to show line number on tail or head, can pipe it with "cat -n"
+		
+2) Replacing Text
+	head -n 1 ~/effective-shell/data/top100.csv | tr ',' '\n' --> extract the first line and after that replace comma ',' with '\n'
+	
+	head -n 1 ~/effective-shell/data/top100.csv | tr ',' '\n' | tr -d '"' --> extract first line, replace comma ',' with '\n' and after that remove the quotes
+
+NOTE: TR command works on CHARACTERS		
+	echo "Welcome to the shell" | tr 'shell' 'machine' --> replace the first letter of shell with the first letter in machine, second with second and so on
+	
+	echo "Use your voice inside" | tr '[[:lower:]]' '[[:upper:]]' --> transform characters in the lower class to uppercase characters
+	
+	echo "Use your voice inside" | tr 'a-z' 'A-Z' --> same thing with above commands but using the ranges instead of character classes
+	
+3) cutting Text
+	cut -d "," -f 3 ~/effective-shell/data/top100.csv | head --> -d short for delimeter, here is cut by comma and using -f for field 3 which is choosing title to print
+		kubectl get pods
+		kubectl get pods | cut -d ' ' -f 1
+		kubectl get pods | cut -d ' ' -f 1 | tail -n +2 or kubectl get pods | cut -d ' ' -f 1 | grep -v NAME
+		
+	tail -n 3 ~/effective-shell/logs/web-server-logs.txt | cut -c 12-19 --> -c short for characters to extract only characters 12 to 19
+	tail -n 3 ~/effective-shell/logs/web-server-logs.txt | cut -c 27- --> cutting from the 27th characters onward
+	
+	tail -n 3 ~/effective-shell/data/top100.csv | cut -d ',' -f 3- --> return the third field onward
+	tail -n 3 ~/effective-shell/data/top100.csv | cut -d ',' -f 2,3 --> return the second and third field
+
+4) Reversing Text
+	echo "A nut for a jar of tuna" | rev --> rev (reverse) command simply reverses the given text
+	pwd | rev | cut -d '/' -f 1 | rev --> return the current directory, good trick
+	
+5) Sorting Text and Removing Duplicate Lines
+	cut -d ',' -f 3 ~/effective-shell/data/top100.csv | sort | head
+
+	cut -d ',' -f 3 ~/effective-shell/data/top100.csv | sort -r | head
+		note: -r: reverse flag, sort in reverse order
+	
+	cut -c 27- ~/effective-shell/logs/web-server-logs.txt | grep error | sort | uniq
+	
+7) Paging Through Text
+	cut -d ',' -f 3 ~/effective-shell/data/top100.csv | sort | less
+	
+		
+	
+	

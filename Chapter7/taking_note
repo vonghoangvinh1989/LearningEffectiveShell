@@ -1,0 +1,80 @@
+1) Transformation with sed
+	a) Replacing Text
+		sed 's/settings/configuration/' backup-config.sh
+			note: replace the word 'settings' to 'configuration' in file backup-config.sh, this command just shows how the sed works in output screen, not actually write anything to file
+				s: subtitution
+				/: denote the start of term you search for
+				settings: the term you search for
+				/: denote the start of text you replace with
+				configuration: the term you will replace with 'settings'
+				/: denote the end of replacement, after here could be flags
+		
+		sed -E 's/settings/configuration/' backup-config.sh --> use extended regexes, no need to escape
+		
+	b) Applying Multiple Expressions
+		Replacing Text on Specific Lines, -e: allow multiple expressions to sed
+			sed -e 's/cp/rmdir/' backup-config.sh --> since this is one expression, -e here is superfluous
+			
+			sed -e '/^cp/s/cp/rmdir/' backup-config.sh --> include an address that tell sed which lines it should apply the expression to, /^cp: a regular expression meaning "any line starting with cp."
+				Alternative: sed -E -e 's/^cp/rmdir/' backup-config.sh --> same with above command but using extended regex much clearer
+	
+		Removing Parts of a Line
+			sed -E -e '/^cp/s/cp/rmdir/' -e '/^rmdir/s/~[^ ]+//' backup-config.sh
+		  or
+		  	sed -E -e 's/^cp/rmdir' -e '/^rmdir/s/~[^ ]+//' backup-config.sh
+			
+	c) Stripping Comments
+		sed -E 's/\s*#.*$//' backup-config.sh --> remove the comments at the beginning of the file
+		
+		sed -E -e 's/#.*$//' -e '/^\s*$/d' backup-config.sh --> delete the lines that used to contain comments and are now empty, use the 'd' function, /d here for delete
+		
+	d) Appending Text
+		sed -E -e 's/#.*$//' -e '/^ *$/d' -e '/^cp/s/$/ || true/' backup-config.sh --> add || true at the end of line with lines start with cp
+		
+	e) Prepending Text
+		sed -E -e '/#/s/^/##/' backup-config.sh --> add two more hash marks ## to the start of any comment line
+			or we can use: sed -E -e '^[[:space:]]*#/s/^/##/' backup-config.sh
+		
+		sed -E -e '/^cp/s/$/"/' -e '/"$/s/^/echo "/' backup-config.sh --> add " at the end of line and after that add echo " at the start of line
+	
+	f) Extracting Information
+		head -n 3 data/top100.csv | sed -E -e 's/.*\(([0-9]+)\).*/\1/' --> \1 construct which means "the first match", \1 replace the entire line with captured digit inside the parentheses; this command matches any text, captures any digits enclosed in parentheses and then print year to the screen with \1
+		
+		
+		sed -E -e '1d' -e 's/.*\(([0-9]+)\).*/\1/' data/top100.csv --> exclude the first line (column heading with '1d')
+
+2) Advanced Application
+	grep -E '[^:]+:' chapter7.md | head --> [^:]+ mean that find at least one character that is not the :, but followed by the :
+	
+	grep -E '^[^: ]+:' chapter7.md | head --> [^: ] search for anything that is not a colon or space
+	grep -E '^[^: "]+:' chapter7.md | head --> [^: "] eliminate the quotation marks before the colon
+	
+Start using this regex in sed
+	sed -E -n '/^[^: "]+:/p' chapter7.md --> -n: no automatic printing which tell sed do not show output unless you explicitly tell it to, /p means print function, which will print any lines that match the patterns
+	
+	To put the result in quotes, we need to find lines where the value is not quoted
+		sed -E -n '/^[^: "]+: +[^"]+$/p' chapter7.md
+		
+	Now, surround the key and value parts in parentheses
+		sed -E -n 's/(^[^: "]+:)( +[^"]+$)/Key is "\1"/p' chapter7.md --> the \1 means the first match or what found in the first capture group
+		
+		sed -E -n 's/(^[^: "]+:)( +[^"]+$)/Value is "\2"/p' chapter7.md --> the \2 means the second match or what found in the second capture group
+	
+	Make the third capture group to capture the separator:	
+		sed -E -n 's/(^[^: "]+)(: +)([^"]+$)/Key "\1", Value "\3", Separator "\2"/p' chapter7.md
+		
+	Add quotes around the unquotes values
+		sed -E -n 's/(^[^: "]+)(: +)([^"]+$)/\1\2"\3"/p' chapter7.md
+
+	Remove -n flag to write out everything and no longer need /p option
+		sed -E -n 's/(^[^: "]+)(: +)([^"]+$)/\1\2"\3"/p' chapter7.md > updated.md
+	
+3) Creating Template Files
+	sed -E 's/%PASSWORD%/secret/' credentials.template.sh --> replace the placeholder with real value 'secret'
+	
+4) Editing in Place
+	sed -i '.bak' 's/staging/production/' test.txt --> performs the substitutions and puts them in a new file with .bak extension
+	
+		
+		
+		

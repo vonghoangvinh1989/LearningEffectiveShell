@@ -1,0 +1,94 @@
+1) Searching with find command
+	Syntax: find option starting expression
+	
+	find ~/effective-shell --> list the full hierarchy of files and folders
+	find /usr/bin /usr/sbin
+
+2) Searching for Only Files or Folders
+	find . -type f --> search only files
+	find . -type d --> return only directories
+	
+3) Searching by File or Folder Name
+	find . -name "simpsons-characters.txt"
+	find . -name "*log*" --> find any file or folder has "log" in their name
+	find . -name "log" --> find exact match for name log
+	
+	Note: the name must be exact and do not forget the quotes
+	
+4) Searching by Path
+	find . -path "*apm-logs*"
+	
+5) Specifying More Than One Search Option
+	And Expression
+		find . -type f -name "*.logs"
+	Or Expression
+		find . -name "*.js" -or -name "*.html"
+		
+6) Running Case-Insensitive Searches
+	find . -name "*.js" -or -name "*.Js" -or -name "*.js" -or name "*.JS"
+	find . -iname "*.js"
+	
+	Note: you can use "-ipath" to run case-insensitive path searches
+	
+7) Grouping Parts of an Expression
+	find . \( -name "*.js" -or -name "*.html" \) -a -path "*programs*"
+	
+	note: -a: and
+	
+8) Excluding Search Result with the NOT Operator
+	find -name "*.js" -and -not -path "*program*"
+	
+9) Acting on Search Results
+	a) Printing Paths
+		find ~ -name "*.tmp" -print
+		Note: no need "-print" since it's default behavior
+		
+	b) Deleting Files
+		find ~ -name "*.tmp" -delete
+		
+	c) Executing Commands
+		find ~/effective-shell -name "*.txt" -exec wc -w {} \;
+		
+		Note: exec tells find to execute a command on each result
+			{}: replace for path of folders/files it finds
+			\;: signify the end of the -exec command
+			
+		Since wc only works for files not folder, we can change a little bit
+			find ~/effective-shell -type f -name "*.txt" -exec wc -w {} \;
+	
+	d) Confirming Commands Before Execution
+		find ~/effective-shell -name "*.txt" -ok rm {} \;
+		
+		-ok: works just like -exec but ask for confirmation
+		
+10) Handling Symbolic Links
+	find /bin: return /bin but /bin is the symlink to /usr/bin
+		How: ls -l / /usr | grep bin
+	find -L /bin: return what the symlinks are linked to (-L: follow links)
+		Note: /bin here is the symlink to /usr/bin
+		
+11) Going Further with find
+	a) Find Large Files
+		find / -size +1G -size -500G
+			note: -size test for search by file size that larger and 1G and smaller than 500G (not include)
+			we can combine with exec or ok: find / -size +1G -size -500G -exec ls -lh {} \; --> really powerful
+	
+	b) Find recently modified files with -mtime, -mtime -2: modified in the last 2 days
+		find . -not -path "*/\.*" -mtime -2		
+	
+	c) Find files that have had permissions changed
+		find ~/.ssh -ctime -30 --> return files whose permissions have been changed in the past 30 days
+		
+	d) Find executable scripts and make them non-executable
+		find ~ -perm /a=x -exec chmod -x {} +
+		
+		note: + --> find will pass all the files to chmod at the same time and execute it
+	only once on the current set, rather than each file
+	
+	e) Find empty folders and remove them after confirmation
+		find ~ -maxdepth 3 -type d -empty -ok -rmdir {} \;
+		
+		note: maxdepth 3 --> limit the search to only three folder deep
+	
+	
+

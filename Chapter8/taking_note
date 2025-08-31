@@ -1,0 +1,24 @@
+1) Introducing xargs
+	find . -empty --> find empty files
+	find . -empty | rm --> does not work since rm does not actually read the list of files from stdin, pass it that list as a parameter
+	
+	find . -empty | xargs --> xargs takes the input, separates each line with a space, and passes the list of files to the echo command, echo will list out to the screen
+	
+	find . -empty | xargs echo rm --> xargs to pass the output to the echo command with rm as its first argument, write out rm followed by the list of files. Putting 'echo' before whatever command you want to run is useful way to check the command before running it
+	
+	find . -empty | xargs rm --> delete the list of files
+	
+2) Handling Whitespace, Special Characters, and Tracing
+	find . -type f | xargs -t rm --> use the option -t ("trace") to show the command that xargs actually tried to run
+	
+	find . -type f -print0 | xargs -0 -t rm --> prevent xargs get confused when it sees spaces, tabs, quotes, newlines in filenames; -print0 means instead of printing results separated by newlines, it prints them separated by a null byte (\0) and -0 tells xargs that input is null-delimited, matching with -print0
+	
+3) Customizing How xargs Processes Input Lines
+	find . -type f | xargs -L 1 echo --> -L flag uses for specify how many files xargs will process at one time, here is 1 file at a time
+	
+	find . -type f | xargs -L 3 echo --> -L 3 here means echo will run twice, processing three files the first time and the remaining two files the second time
+	
+4) Organizing the Parameters for Commands
+	
+	
+	

@@ -1,0 +1,42 @@
+Note: cat ~/effective-shell/data/email-addresses.txt | xclip -selection clipboard: copy content of file email-addresses.txt in the clipboard, you can ctrl+V (paste) it afterwards 
+
+1) Quantifiers
+	+: at least one
+	*: any numbers of characters
+	?: between zero and one character
+	{n}: exactly n occurrences
+	{n,}: n or more occurrences
+	{n, m}: between n and m occurrences
+
+2) Character Sets and Metacharacters
+	a) Specifying Ranges
+		[A-Z]
+		[A-Za-z0-9]
+		\w: metcharacter represent all uppercase, lowercase letters and all digits 0 to 9
+			Ex: [A-Za-z0-9]+@[A-Za-z0-9]+ or \w+@\w+
+			
+		note: man re_pattern
+		
+	b) Adding Special Characters
+		[\w\-.]+@[\w\-.]+: add hyphen (-) and dot (.) into the range of characters
+		
+	c) Negating Characters
+		[^\s@]+@[^\s@]+: with [^\s@] to exclude whitespace and @ signs, \s means "any non-whitespace character"
+		
+3) Anchors
+	^[^\s@]+@[^\s@]+$: with ^ in front (outside []) and $ at the end (outside) mean start and the end of line	
+	Example 2: ^to: match any line that starts with the letters to such as: to: dave@effective-shell.com
+		
+4) Capture Groups
+	(.+)@(.+): we can break expression into smaller parts with capture groups, surrounded by parentheses
+	
+5) Lazy and Greedy Expressions
+	<.+>: match <strong>bold</strong> since regexes are greedy by default
+	To create lazy expression (capture as few characters as possible): use the question marks (?) after the + quantifier as: <.+?>, it will match <strong>, </strong> but not the text "bold", lazy expression also have the shortcut <[^>]+> with ^> any character that is not a closing brace
+
+6) Look Around
+	\d+(?=Euro): with ?= in regex meaning positive lookahead, match something only if it is immediately followed by a specific pattern
+	Ex: \d(?= dollars) match 100 dollars, 50 cents
+	
+	
+
