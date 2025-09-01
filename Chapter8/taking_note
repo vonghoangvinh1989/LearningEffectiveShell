@@ -29,4 +29,7 @@
 	ls | xargs -t -I {} -p cp {} ~/pics/{} --> -p (prompt) option tells xargs to ask you to confirm each command before running it	
 
 6) Running a Command for Each Input
+	echo $PATH | xargs -d ':' -p -L 1 ls --> -d delimeter specify how xargs would like to break the input, -L 1 and -p parameters ensure one command will be run for each input folder
+	
+
 	
