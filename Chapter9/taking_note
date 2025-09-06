@@ -1,2 +1,45 @@
 1) Creating a Basic Shell Scripts
-	a) Adding Code Comment
+	a) Adding and Formatting Commands
+		Script common.v1.sh
+			# Inform the user of the output they can expect.
+			echo "common commands:"
+
+			# Show the most commonly used commands.
+			tail ~/.bash_history -n 1000 
+				| sort \
+				| uniq -c \
+				| sed 's/^ *//' \
+				| sort -n -r \
+				| head -n 10
+
+		Explain: uniq -c --> -c option prefixes each unique line with the number of occurrences.
+		         sed 's/^ *//' --> Removes leading spaces before the counts, for cleaner formatting.
+		         sort -n -r --> Sorts numerically (-n) and in reverse order (-r), So the most frequently used commands appear first.
+		         
+		Note: history -c: clear
+		      history -r: reload tells the shell to reload the history file so that your bash history
+		      
+	b) Pipelining Commands
+		sh ~/scripts/common.v1.sh --> sh starts a new shell, sh run the script and then exits
+	
+	c) Making Shell Scripts Executable
+		chmod +x ~/scripts/common.v1.sh
+		
+	d) Specifying What Program Should Run a Script
+		#!/usr/bin/sh --> shebang tells the system what program it should use to run a script, here is sh
+		
+		env python3 --> we can use env to run python program, here is python3
+		
+		which env --> to confirm env (or can use 'which bash' to confirm the path of bash) in the system
+			so we can write something as: #!/usr/bin/env sh 
+		
+	e) Sourcing Shell Scripts
+		source ~/effective-shell/scripts/set_editor.sh --> loading the content into current shell session and running command there (another syntax is using dot notation (.) as '. ~/effective-shell/scripts/set_editor.sh'
+
+2) Installing Scripts Locally
+	sudo ln -s ~/scripts/common.v1.sh /usr/local/bin/common --> create symbolic link called common in /usr/local/bin folder
+	
+		
+		
+		
+		
